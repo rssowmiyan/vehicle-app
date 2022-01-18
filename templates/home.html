@@ -32,10 +32,10 @@
     <div class="container">
         <div class="row" style="margin-top: 35vh;">
             <div class="col">
-                <div class="rectangle"><a href="http://localhost:8000/create/">Register <i class="bi bi-check-circle-fill"></i></a></div>
+                <div class="rectangle"><a href="{% url 'register' %}">Register <i class="bi bi-check-circle-fill"></i></a></div>
             </div>
             <div class="col">
-                <div class="rectangle"><a href="http://localhost:8000/read/">View <i class="bi bi-book-half"></i> / Modify <i class="bi bi-pen-fill"></i></a></div>
+                <div class="rectangle"><a href="{% url 'vehicleview' %}">View <i class="bi bi-book-half"></i> / Modify <i class="bi bi-pen-fill"></i></a></div>
             </div>
             <!-- <div class="col">
                     <div class="rectangle"><a href="#">Update</a> <i class="bi bi-wrench"></i></div>
