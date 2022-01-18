@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-(cqsbuil$twy4tfddv(tpvkn=p7lo=x5c_9k$*4g$sbcmw7$-(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['vehicle-crud.azurewebsites.net',]
 
 
 # Application definition
