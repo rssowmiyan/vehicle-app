@@ -83,6 +83,9 @@ def register(request):
         if(reg_form.is_valid()):
             reg_form.save()
             return redirect('loginuser')
+        else:
+            form = UserCreationForm
+            return render(request,'register.html',{'form':form,'error':'Ensure that the password meets the criteria mentioned'})
     
 @login_required
 def logoutuser(request):
