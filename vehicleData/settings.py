@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-(cqsbuil$twy4tfddv(tpvkn=p7lo=x5c_9k$*4g$sbcmw7$-(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['vehicle-crud.azurewebsites.net',]
+ALLOWED_HOSTS = ['vehicle-crud.azurewebsites.net','localhost']
 
 
 # Application definition
@@ -112,3 +112,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+

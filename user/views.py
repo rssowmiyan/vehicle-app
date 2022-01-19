@@ -1,4 +1,5 @@
 from itertools import product
+import pstats
 from django.shortcuts import render
 from .forms import VehicleForm
 from django.http import HttpResponseRedirect
@@ -6,11 +7,17 @@ from .models import Vehicle
 from django.shortcuts import get_object_or_404,redirect
 from django.views.generic import View
 from django.urls import reverse
+# related to user accounts
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+
 
 def home(request):
     return render(request,'home.html')
 
-def register(request):
+def createveh(request):
     if(request.method=='GET'):
         form = VehicleForm()
         return render(request,'fillin.html',{'form':form})
@@ -26,7 +33,7 @@ def register(request):
 # def display(request):
 #     all_veh_objs = Vehicle.objects.all()
 #     return render(request,'display.html',{'objs':all_veh_objs})
-
+@login_required(login_url='/')
 def viewveh(request,veh_pk):
     selected_vehicle = get_object_or_404(Vehicle,pk=veh_pk)
     if(request.method=="GET"):
@@ -55,3 +62,30 @@ class VehicleView(View):
                 print(f'id -> {id}')
             return HttpResponseRedirect(reverse('vehicleview'))
 
+def loginuser(request):
+    if request.method == 'GET':
+        return render(request, 'loginuser.html', {'form':AuthenticationForm()})
+    else:
+        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        if user is None:
+            return render(request, 'loginuser.html', {'form':AuthenticationForm(), 'error':'Check the login details'})
+        else:
+            login(request, user)
+            return redirect('home')
+
+
+def register(request):
+    if(request.method=='GET'):
+        form = UserCreationForm
+        return render(request,'register.html',{'form':form})
+    else:
+        reg_form = UserCreationForm(request.POST)
+        if(reg_form.is_valid()):
+            reg_form.save()
+            return redirect('loginuser')
+    
+@login_required
+def logoutuser(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('home')
