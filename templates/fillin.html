@@ -20,6 +20,13 @@
    
 </head>
 <body>
+
+    {% if error %}
+    <div class="alert alert-danger" style="margin-top: 8px;margin-left: 55vh;width: 90vh;">
+        <strong>Error!</strong> {{ error }}
+    </div>
+    {% endif %}
+
     <div class="float-end m-2"><a class="btn btn-outline-primary" href="{% url 'home' %}">Go back</a></div><br>
     <div class="container mt-2" style="width: 80vh;">
         <form action="" method="POST">

@@ -9,6 +9,7 @@ urlpatterns = [
     path('create/',views.createveh,name='createveh'),
     path('read/',VehicleView.as_view(),name='vehicleview'),
     path('veh/<int:veh_pk>',views.viewveh,name='viewveh'),
+    path('search/',views.searchform,name='searchform'),
     # Authentication
     path('accounts/register',views.register,name='register'),
     path('login/',views.loginuser,name='loginuser'),

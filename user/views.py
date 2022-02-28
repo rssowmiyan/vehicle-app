@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
-
+from django.db.models import Q
 
 def home(request):
     return render(request,'home.html')
@@ -24,8 +24,25 @@ def createveh(request):
     else:
         form = VehicleForm(request.POST)
         if(form.is_valid()):
-            form.save()
-            return HttpResponseRedirect('/')
+            brand = form.cleaned_data['brand']
+            model = form.cleaned_data['model']
+            owner_name = form.cleaned_data['owner_name']
+            description = form.cleaned_data['description']
+            special_characters = ['!','#','$','%','@','&','*','+','=','^','-']
+            if(brand.isdigit() or model.isdigit() or owner_name.isdigit()):
+                return render(request,'fillin.html',{'form':form,'error':'Give proper data & Check the data in brand/model/owner_name'})
+            elif(set(brand).issubset(special_characters)):
+                return render(request,'fillin.html',{'form':form,'error':'Brand value is invalid'})
+            elif(set(model).issubset(special_characters)):
+                return render(request,'fillin.html',{'form':form,'error':'Model value is invalid'})
+            elif(set(owner_name).issubset(special_characters)):
+                return render(request,'fillin.html',{'form':form,'error':'owner name value is invalid'})
+            # atleast if everything is right    
+            else:
+                new_form = form.save(commit=False)
+                new_form.user = request.user
+                new_form.save()
+                return HttpResponseRedirect('/')
         else:
             return render(request,'fillin.html',{'form':form})
 
@@ -47,12 +64,13 @@ def viewveh(request,veh_pk):
         except ValueError:
             return render(request,'viewveh.html',{'selected_vehicle_form':selected_vehicle_form,'error':'Check the details entered'})
 
-
+# used to diplay data in table
 class VehicleView(View):
     def get(self,request):
         if(request.method=='GET'):
-            all_veh_objs = Vehicle.objects.all()
+            all_veh_objs = Vehicle.objects.filter(user=request.user)
             return render(request,'display.html',{'objs':all_veh_objs})
+            
     def post(self,request,*args,**kwargs):
         if(request.method=='POST'):
             ids = request.POST.getlist('id[]')
@@ -92,3 +110,12 @@ def logoutuser(request):
     if request.method == 'POST':
         logout(request)
         return redirect('home')
+
+
+@login_required
+def searchform(request):
+    if(request.method=='POST'):
+        search_term=request.POST['search_term']
+        lookups= Q(brand__icontains=search_term) | Q(model__icontains=search_term) | Q(owner_name__icontains=search_term)
+        search_results = Vehicle.objects.filter(lookups).distinct()
+        return render(request,'display.html',{'objs':search_results})
