@@ -31,6 +31,10 @@
         <form method="POST">
             {% csrf_token %}
             {{ form | crispy }}
+            <div class="form-group mb-3">
+                <label for="companyName">Company Name</label>
+                <input type="text" class="form-control" id="companyName" placeholder="Enter company name" name="companyName">
+            </div>
             <div class="form-group mb-2">
                 <input class="btn btn-success" type="submit" value="Submit">
             </div>

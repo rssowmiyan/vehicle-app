@@ -3,7 +3,7 @@ import pstats
 from django.shortcuts import render
 from .forms import VehicleForm
 from django.http import HttpResponseRedirect
-from .models import Vehicle
+from .models import Vehicle,UserDetails
 from django.shortcuts import get_object_or_404,redirect
 from django.views.generic import View
 from django.urls import reverse
@@ -40,7 +40,7 @@ def createveh(request):
             # atleast if everything is right    
             else:
                 new_form = form.save(commit=False)
-                new_form.user = request.user
+                new_form.company = request.session.get('company')
                 new_form.save()
                 return HttpResponseRedirect('/')
         else:
@@ -68,7 +68,9 @@ def viewveh(request,veh_pk):
 class VehicleView(View):
     def get(self,request):
         if(request.method=='GET'):
-            all_veh_objs = Vehicle.objects.filter(user=request.user)
+            # all_veh_objs = Vehicle.objects.all()
+            currentcompany = request.session.get('company')
+            all_veh_objs = Vehicle.objects.filter(company__icontains=currentcompany)
             return render(request,'display.html',{'objs':all_veh_objs})
             
     def post(self,request,*args,**kwargs):
@@ -84,6 +86,9 @@ def loginuser(request):
     if request.method == 'GET':
         return render(request, 'loginuser.html', {'form':AuthenticationForm()})
     else:
+        company_obj = UserDetails.objects.filter(username__icontains=request.POST['username']).first()
+        company_name = company_obj.company
+        request.session['company'] = company_name
         user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
         if user is None:
             return render(request, 'loginuser.html', {'form':AuthenticationForm(), 'error':'Check the login details'})
@@ -99,6 +104,8 @@ def register(request):
     else:
         reg_form = UserCreationForm(request.POST)
         if(reg_form.is_valid()):
+            company_name = request.POST['companyName']
+            request.session['company'] = company_name
             reg_form.save()
             return redirect('loginuser')
         else:

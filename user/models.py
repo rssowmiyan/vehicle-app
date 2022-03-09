@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
@@ -14,8 +15,14 @@ class Vehicle(models.Model):
     registration_number = models.CharField(max_length=15,unique=True,help_text='TN 07 AL 2406 - TEN DIGIT')
     date_of_registration = models.DateField(help_text='yyyy-mm-dd | mm-dd-yyyy')
     description = models.TextField(blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    company = models.CharField(max_length=30,default='trimble')
     def __str__(self) -> str:
         return self.owner_name
 
+class UserDetails(models.Model):
+    username = models.CharField(max_length=30)
+    company  = models.CharField(max_length=30)
+
+    def __str__(self) -> str:
+        return f'{self.username} employee of {self.company}'
