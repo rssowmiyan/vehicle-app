@@ -126,3 +126,7 @@ def searchform(request):
         lookups= Q(brand__icontains=search_term) | Q(model__icontains=search_term) | Q(owner_name__icontains=search_term)
         search_results = Vehicle.objects.filter(lookups).distinct()
         return render(request,'display.html',{'objs':search_results})
+
+
+def aboutme(request):
+    return render(request,'aboutme.html')
